@@ -123,20 +123,20 @@ void Display::update() {
 /*}}}*/
 /*{{{  Display::handle_event */
 void Display::handle_event(SDL_Event& event) {
-	switch (event.type) {
-	case SDL_QUIT:
-		exit(0);
-		break;
-	case SDL_KEYDOWN:
-		switch (event.key.keysym.sym) {
-		case SDLK_t:
-			display_text_ = !display_text_;
-			break;
-		default:
-			break;
-		}
-		break;
-	}
+    switch (event.type) {
+    case SDL_QUIT:
+        exit(0);
+        break;
+    case SDL_KEYDOWN:
+        switch (event.key.keysym.sym) {
+        case SDLK_t:
+            display_text_ = !display_text_;
+            break;
+        default:
+            break;
+        }
+        break;
+    }
 }
 /*}}}*/
 /*{{{  Display::draw_objects */
