@@ -3,6 +3,8 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libalgae.la
 
 libalgae_la_SOURCES = \
+	libalgae/display.cc \
+	libalgae/display.h \
 	libalgae/viewer.cc
 
 include_HEADERS = \

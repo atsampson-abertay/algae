@@ -1,3 +1,5 @@
+/** The SDL/OpenGL display. */
+
 /*
  *  Copyright 2010, 2011, 2012 Adam Sampson
  *  All rights reserved.
@@ -29,46 +31,38 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef DISPLAY_H
+#define DISPLAY_H
+
 #include "algae.h"
-#include "display.h"
 
-#include <boost/make_shared.hpp>
-#include <cstdlib>
-#include <iostream>
+// The include ordering here is important: we need to pull in glew.h before
+// gl.h, and stop SDL redefining the glext.h stuff.
+#include <SDL.h>
+#include <GL/glew.h>
+#define NO_SDL_GLEXT
+#include <SDL_opengl.h>
 
-using namespace algae;
+namespace algae {
 
-/*{{{  Viewer::Viewer */
-Viewer::Viewer()
-    : display_(new Display) {
+class Display {
+public:
+    Display();
+
+    void add_frame(FramePtr frame);
+    void update();
+
+protected:
+    void handle_event(SDL_Event& event);
+    void draw_objects();
+    void draw_text();
+
+    int display_width_, display_height_;
+    bool display_text_;
+    SDL_Surface *window_;
+    std::vector<FramePtr> frames_;
+};
+
 }
-/*}}}*/
-/*{{{  Viewer::~Viewer */
-Viewer::~Viewer() {
-    // Subtle: this destructor doesn't do anything, but it's necessary in order
-    // for display_ to be destroyed in a context where the full (not forward)
-    // declaration of Display is available.
-}
-/*}}}*/
-/*{{{  Viewer::new_frame */
-FramePtr Viewer::new_frame() {
-    return boost::make_shared<Frame>(*this);
-}
-/*}}}*/
-/*{{{  Viewer::run */
-void Viewer::run() {
-    while (true) {
-        run_once();
-    }
-}
-/*}}}*/
-/*{{{  Viewer::run_once */
-void Viewer::run_once() {
-    display_->update();
-}
-/*}}}*/
-/*{{{  Viewer::commit_frame */
-void Viewer::commit_frame(FramePtr frame) {
-    display_->add_frame(frame);
-}
-/*}}}*/
+
+#endif

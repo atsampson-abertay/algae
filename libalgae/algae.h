@@ -34,12 +34,15 @@
 #ifndef ALGAE_H
 #define ALGAE_H
 
+#include <boost/enable_shared_from_this.hpp>
+#include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace algae {
 
 /*{{{  forward declarations */
+class Display;
 class Frame;
 class Object;
 class Viewer;
@@ -66,19 +69,22 @@ class Viewer {
 
 public:
     Viewer();
+    ~Viewer();
 
-    FramePtr add_frame();
+    FramePtr new_frame();
+
     void run();
+    void run_once();
 
 protected:
-    void commit_frame(Frame& frame);
+    void commit_frame(FramePtr frame);
 
-    std::vector<FramePtr> frames_;
+    boost::scoped_ptr<Display> display_;
 };
 /*}}}*/
 
 /*{{{  class Frame */
-class Frame {
+class Frame : public boost::enable_shared_from_this<Frame> {
 public:
     Frame(Viewer& viewer)
         : viewer_(viewer) {}
@@ -90,7 +96,7 @@ public:
     }
 
     void end() {
-        viewer_.commit_frame(*this);
+        viewer_.commit_frame(shared_from_this());
     }
 
 private:
