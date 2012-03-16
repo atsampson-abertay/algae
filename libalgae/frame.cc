@@ -1,5 +1,3 @@
-/** Algae: a library for visualising collections of objects in 3D space. */
-
 /*
  *  Copyright 2010, 2011, 2012 Adam Sampson
  *  All rights reserved.
@@ -31,84 +29,37 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef ALGAE_H
-#define ALGAE_H
+#include "algae.h"
+#include "group.h"
 
-#include <boost/enable_shared_from_this.hpp>
-#include <boost/make_shared.hpp>
-#include <boost/scoped_ptr.hpp>
-#include <boost/shared_ptr.hpp>
-#include <boost/unordered_map.hpp>
-#include <vector>
+using namespace algae;
 
-namespace algae {
-
-/*{{{  forward declarations */
-class Display;
-class Frame;
-class Group;
-class Object;
-class Viewer;
-/*}}}*/
-
-/*{{{  typedefs */
-typedef boost::shared_ptr<Frame> FramePtr;
-typedef boost::shared_ptr<Group> GroupPtr;
-/*}}}*/
-
-/*{{{  class Object */
-class Object {
-public:
-    Object(float _x = 0.0, float _y = 0.0, float _z = 0.0, float _radius = 0.0)
-        : x(_x), y(_y), z(_z), radius(_radius) {}
-
-    float x, y, z;
-    float radius;
-};
-/*}}}*/
-
-/*{{{  class Viewer */
-class Viewer {
-    friend class Frame;
-
-public:
-    Viewer();
-    ~Viewer();
-
-    FramePtr new_frame();
-
-    void run();
-    void run_once();
-
-protected:
-    void commit_frame(FramePtr frame);
-
-    boost::scoped_ptr<Display> display_;
-};
-/*}}}*/
-
-/*{{{  class Frame */
-class Frame : public boost::enable_shared_from_this<Frame> {
-public:
-    Frame(Viewer& viewer);
-
-    void group(int num);
-    Object& add(const Object& obj);
-    void end();
-
-protected:
-    // groups_ is a map from group numbers to Groups.
-    // If there is no entry in the map, that group was never selected,
-    // and should stay the same as it was on the last frame.
-    typedef boost::unordered_map<int, GroupPtr> GroupMap;
-    typedef GroupMap::value_type GroupMapItem;
-
-    Viewer& viewer_;
-    GroupMap groups_;
-    GroupPtr current_group_;
-};
-/*}}}*/
-
+/*{{{  Frame::Frame */
+Frame::Frame(Viewer& viewer)
+    : viewer_(viewer) {
 }
-
-#endif
+/*}}}*/
+/*{{{  void Frame::group */
+void Frame::group(int num) {
+    current_group_ = groups_[num];
+    if (!current_group_) {
+        // Not there yet.
+        current_group_ = boost::make_shared<Group>();
+        groups_[num] = current_group_;
+    }
+}
+/*}}}*/
+/*{{{  Object& Frame::add */
+Object& Frame::add(const Object& obj) {
+    if (!current_group_) {
+        // No group selected yet -- pick group 0.
+        group(0);
+    }
+    return current_group_->add(obj);
+}
+/*}}}*/
+/*{{{  void Frame::end */
+void Frame::end() {
+    viewer_.commit_frame(shared_from_this());
+}
+/*}}}*/

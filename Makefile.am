@@ -5,6 +5,9 @@ lib_LTLIBRARIES = libalgae.la
 libalgae_la_SOURCES = \
 	libalgae/display.cc \
 	libalgae/display.h \
+	libalgae/frame.cc \
+	libalgae/group.cc \
+	libalgae/group.h \
 	libalgae/viewer.cc
 
 include_HEADERS = \

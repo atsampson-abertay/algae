@@ -65,7 +65,7 @@ extern "C" int main(int argc, char *argv[]) {
 
     algae::FramePtr frame = viewer.new_frame();
     for (float f = -10.0; f < 10.0; f += 0.1) {
-        frame->add(10.0 * sinf(f), 10.0 * cosf(f), f);
+        frame->add(algae::Object(10.0 * sinf(f), 10.0 * cosf(f), f));
     }
     frame->end();
 
