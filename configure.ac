@@ -4,6 +4,7 @@ AM_INIT_AUTOMAKE([foreign])
 
 AC_PROG_CC
 AC_PROG_CXX
+AC_PROG_LIBTOOL
 AC_LANG([C++])
 
 use_sdl_display=true

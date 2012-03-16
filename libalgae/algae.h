@@ -1,4 +1,4 @@
-/** Standalone viewer tool. */
+/** Algae: a library for visualising collections of objects in 3D space. */
 
 /*
  *  Copyright 2010, 2011, 2012 Adam Sampson
@@ -31,35 +31,3 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <boost/program_options.hpp>
-#include <iostream>
-
-#include "algae.h"
-
-namespace opts = boost::program_options;
-
-/*{{{  main */
-extern "C" int main(int argc, char *argv[]) {
-    /*{{{  parse command-line options */
-    opts::options_description desc("Options");
-#define simple(Type, Name, Default) opts::value<Type>(&config.Name)->default_value(Default)
-    desc.add_options()
-        ("help", "display this help and exit")
-        ;
-#undef simple
-
-    opts::variables_map vars;
-    opts::store(opts::parse_command_line(argc, argv, desc), vars);
-    opts::notify(vars);
-
-    if (vars.count("help")) {
-        /*{{{  show help */
-        std::cout << desc << std::endl;
-        exit(0);
-        /*}}}*/
-    }
-    /*}}}*/
-
-    return 0;
-}
-/*}}}*/
