@@ -48,6 +48,7 @@ class Display;
 class Frame;
 class Group;
 class Object;
+class Vec3;
 class Viewer;
 /*}}}*/
 
@@ -56,13 +57,23 @@ typedef boost::shared_ptr<Frame> FramePtr;
 typedef boost::shared_ptr<Group> GroupPtr;
 /*}}}*/
 
+/*{{{  class Vec3 */
+class Vec3 {
+public:
+    Vec3(float _x = 0.0, float _y = 0.0, float _z = 0.0)
+        : x(_x), y(_y), z(_z) {}
+
+    float x, y, z;
+};
+/*}}}*/
+
 /*{{{  class Object */
 class Object {
 public:
-    Object(float _x = 0.0, float _y = 0.0, float _z = 0.0, float _radius = 0.0)
-        : x(_x), y(_y), z(_z), radius(_radius) {}
+    Object(float x = 0.0, float y = 0.0, float z = 0.0, float _radius = 0.0)
+        : pos(x, y, z), radius(_radius) {}
 
-    float x, y, z;
+    Vec3 pos;
     float radius;
 };
 /*}}}*/
