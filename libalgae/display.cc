@@ -29,8 +29,11 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "algae.h"
 #include "display.h"
+#include "group.h"
 
+#include <boost/foreach.hpp>
 #include <cstdlib>
 #include <iostream>
 
@@ -138,6 +141,19 @@ void Display::handle_event(SDL_Event& event) {
 /*}}}*/
 /*{{{  Display::draw_objects */
 void Display::draw_objects() {
+    /*{{{  print objects */
+    const Frame& frame(*frames_.back());
+    BOOST_FOREACH (const GroupMap::value_type& item, frame.groups()) {
+        const Group& group(*item.second);
+        std::cout << "Group " << item.first << std::endl;
+        BOOST_FOREACH (const Object& obj, group.objects()) {
+            std::cout << "  Object pos=" << obj.pos << std::endl;
+        }
+        std::cout << "  min=" << group.min_pos() << std::endl;
+        std::cout << "  max=" << group.max_pos() << std::endl;
+        std::cout << std::endl;
+    }
+    /*}}}*/
 }
 /*}}}*/
 /*{{{  Display::draw_text */

@@ -36,8 +36,6 @@
 
 #include "algae.h"
 
-#include <vector>
-
 namespace algae {
 
 class Group {
@@ -46,16 +44,18 @@ public:
 
     void add(const Object& obj);
 
-    const Vec3& min_pos() {
+    const Vec3& min_pos() const {
         return min_pos_;
     }
-    const Vec3& max_pos() {
+    const Vec3& max_pos() const {
         return max_pos_;
     }
 
-protected:
-    typedef std::vector<Object> ObjectList;
+    const ObjectList& objects() const {
+        return objects_;
+    }
 
+protected:
     ObjectList objects_;
     Vec3 min_pos_, max_pos_;
 };

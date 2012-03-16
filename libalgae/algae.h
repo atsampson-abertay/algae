@@ -39,6 +39,7 @@
 #include <boost/scoped_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/unordered_map.hpp>
+#include <iostream>
 #include <vector>
 
 namespace algae {
@@ -55,6 +56,8 @@ class Viewer;
 /*{{{  typedefs */
 typedef boost::shared_ptr<Frame> FramePtr;
 typedef boost::shared_ptr<Group> GroupPtr;
+typedef boost::unordered_map<int, GroupPtr> GroupMap;
+typedef std::vector<Object> ObjectList;
 /*}}}*/
 
 /*{{{  class Vec3 */
@@ -80,6 +83,13 @@ public:
 
     float x, y, z;
 };
+/*{{{  ostream operator<< */
+template <class charT, class traits>
+inline std::basic_ostream<charT, traits>&
+    operator<<(std::basic_ostream<charT, traits>& os, const Vec3& vec) {
+    return os << "(" << vec.x << ", " << vec.y << "," << vec.z << ")";
+}
+/*}}}*/
 /*}}}*/
 
 /*{{{  class Object */
@@ -122,14 +132,15 @@ public:
     void add(const Object& obj);
     void end();
 
+    const GroupMap& groups() const {
+        return groups_;
+    }
+
 protected:
-    // groups_ is a map from group numbers to Groups.
+    Viewer& viewer_;
+    // A map from group numbers to Groups.
     // If there is no entry in the map, that group was never selected,
     // and should stay the same as it was on the last frame.
-    typedef boost::unordered_map<int, GroupPtr> GroupMap;
-    typedef GroupMap::value_type GroupMapItem;
-
-    Viewer& viewer_;
     GroupMap groups_;
     GroupPtr current_group_;
 };
