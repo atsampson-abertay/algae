@@ -31,10 +31,10 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "algae.h"
+
 #include <boost/program_options.hpp>
 #include <iostream>
-
-#include "algae.h"
 
 namespace opts = boost::program_options;
 
