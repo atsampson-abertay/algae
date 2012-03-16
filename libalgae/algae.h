@@ -63,6 +63,21 @@ public:
     Vec3(float _x = 0.0, float _y = 0.0, float _z = 0.0)
         : x(_x), y(_y), z(_z) {}
 
+    /*{{{  to_min */
+    void to_min(const Vec3& other) {
+        if (other.x < x) x = other.x;
+        if (other.y < y) y = other.y;
+        if (other.z < z) z = other.z;
+    }
+    /*}}}*/
+    /*{{{  to_max */
+    void to_max(const Vec3& other) {
+        if (other.x > x) x = other.x;
+        if (other.y > y) y = other.y;
+        if (other.z > z) z = other.z;
+    }
+    /*}}}*/
+
     float x, y, z;
 };
 /*}}}*/

@@ -40,6 +40,9 @@ Group::Group() {
 /*}}}*/
 /*{{{  Object& Group::add */
 Object& Group::add(const Object& obj) {
+    min_pos_.to_min(obj.pos);
+    max_pos_.to_max(obj.pos);
+
     objects_.push_back(obj);
     return objects_.back();
 }

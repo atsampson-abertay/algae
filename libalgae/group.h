@@ -46,10 +46,18 @@ public:
 
     Object& add(const Object& obj);
 
+    const Vec3& min_pos() {
+        return min_pos_;
+    }
+    const Vec3& max_pos() {
+        return max_pos_;
+    }
+
 protected:
     typedef std::vector<Object> ObjectList;
 
     ObjectList objects_;
+    Vec3 min_pos_, max_pos_;
 };
 
 }
