@@ -66,6 +66,66 @@ public:
     Vec3(float _x = 0.0, float _y = 0.0, float _z = 0.0)
         : x(_x), y(_y), z(_z) {}
 
+    /*{{{  operator+= */
+    Vec3& operator+=(const Vec3& other) {
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        return *this;
+    }
+    /*}}}*/
+    /*{{{  operator-= */
+    Vec3& operator-=(const Vec3& other) {
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+        return *this;
+    }
+    /*}}}*/
+    /*{{{  operator*= */
+    Vec3& operator*=(float v) {
+        x *= v;
+        y *= v;
+        z *= v;
+        return *this;
+    }
+    /*}}}*/
+    /*{{{  operator/= */
+    Vec3& operator/=(float v) {
+        x /= v;
+        y /= v;
+        z /= v;
+        return *this;
+    }
+    /*}}}*/
+    /*{{{  operator+ */
+    Vec3 operator+(const Vec3& other) {
+        Vec3 result(*this);
+        result += other;
+        return result;
+    }
+    /*}}}*/
+    /*{{{  operator- */
+    Vec3 operator-(const Vec3& other) {
+        Vec3 result(*this);
+        result -= other;
+        return result;
+    }
+    /*}}}*/
+    /*{{{  operator* */
+    Vec3 operator*(const float v) {
+        Vec3 result(*this);
+        result *= v;
+        return result;
+    }
+    /*}}}*/
+    /*{{{  operator/ */
+    Vec3 operator/(const float v) {
+        Vec3 result(*this);
+        result /= v;
+        return result;
+    }
+    /*}}}*/
     /*{{{  to_min */
     void to_min(const Vec3& other) {
         if (other.x < x) x = other.x;
