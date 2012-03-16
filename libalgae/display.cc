@@ -30,6 +30,7 @@
  */
 
 #include "algae.h"
+#include "colour.h"
 #include "display.h"
 #include "group.h"
 
@@ -64,6 +65,28 @@ Display::Display()
         std::cerr << "glewInit() failed" << std::endl;
         exit(1);
     }
+    /*}}}*/
+
+    /*{{{  set up lighting and materials */
+    const GLfloat black[] = {0.0, 0.0, 0.0, 1.0};
+    const GLfloat white[] = {1.0, 1.0, 1.0, 1.0};
+    const GLfloat slight[] = {0.02, 0.02, 0.02, 1.0};
+
+    glEnable(GL_LIGHTING);
+    const GLfloat ambient[] = {0.7, 0.7, 0.7, 1.0};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+
+    glEnable(GL_LIGHT0);
+    const GLfloat pos0[] = {1.0, 1.0, 0.0, 1.0};
+    glLightfv(GL_LIGHT0, GL_POSITION, pos0);
+    glLightfv(GL_LIGHT0, GL_AMBIENT, black);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, slight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, slight);
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, white);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
     /*}}}*/
 }
 /*}}}*/
@@ -141,8 +164,10 @@ void Display::handle_event(SDL_Event& event) {
 /*}}}*/
 /*{{{  Display::draw_objects */
 void Display::draw_objects() {
-    /*{{{  print objects */
     const Frame& frame(*frames_.back());
+
+#if 0
+    /*{{{  print objects */
     BOOST_FOREACH (const GroupMap::value_type& item, frame.groups()) {
         const Group& group(*item.second);
         std::cout << "Group " << item.first << std::endl;
@@ -152,6 +177,53 @@ void Display::draw_objects() {
         std::cout << "  min=" << group.min_pos() << std::endl;
         std::cout << "  max=" << group.max_pos() << std::endl;
         std::cout << std::endl;
+    }
+    /*}}}*/
+#endif
+
+    /*{{{  find overall bounds and centre */
+    Vec3 min_pos, max_pos;
+    // FIXME: handle empty groups
+    BOOST_FOREACH (const GroupMap::value_type& item, frame.groups()) {
+        const Group& group(*item.second);
+        min_pos.to_min(group.min_pos());
+        max_pos.to_max(group.max_pos());
+    }
+    /*}}}*/
+
+    /*{{{  scale and translate so everything's visible */
+    {
+        float zoom = 1.0;
+        float rotate = 0.0;
+
+        Vec3 size = max_pos - min_pos;
+        Vec3 centre = (min_pos + max_pos) / 2;
+        float scale = 1.0 / size.y;
+
+        glMatrixMode(GL_MODELVIEW);
+
+        glTranslatef(0.0, 0.0, -(size.x * scale * zoom));
+        glRotatef(rotate, 0.0, 1.0, 0.0);
+        glScalef(scale, scale, scale);
+        glTranslatef(-centre.x, -centre.y, -centre.z);
+    }
+    /*}}}*/
+
+    /*{{{  draw all the objects */
+    BOOST_FOREACH (const GroupMap::value_type& item, frame.groups()) {
+        const Group& group(*item.second);
+
+        Colour colour(1.0, 1.0, 1.0);
+
+        float c[4];
+        colour.to_quad(c);
+        glColor4fv(c);
+
+        glBegin(GL_POINTS);
+        BOOST_FOREACH (const Object& obj, group.objects()) {
+            glVertex3f(obj.pos.x, obj.pos.y, obj.pos.z);
+        }
+        glEnd();
     }
     /*}}}*/
 }
