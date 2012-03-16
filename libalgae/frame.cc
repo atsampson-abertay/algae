@@ -39,7 +39,7 @@ Frame::Frame(Viewer& viewer)
     : viewer_(viewer) {
 }
 /*}}}*/
-/*{{{  void Frame::group */
+/*{{{  Frame::group */
 void Frame::group(int num) {
     current_group_ = groups_[num];
     if (!current_group_) {
@@ -49,8 +49,8 @@ void Frame::group(int num) {
     }
 }
 /*}}}*/
-/*{{{  Object& Frame::add */
-Object& Frame::add(const Object& obj) {
+/*{{{  Frame::add */
+void Frame::add(const Object& obj) {
     if (!current_group_) {
         // No group selected yet -- pick group 0.
         group(0);
@@ -58,7 +58,7 @@ Object& Frame::add(const Object& obj) {
     return current_group_->add(obj);
 }
 /*}}}*/
-/*{{{  void Frame::end */
+/*{{{  Frame::end */
 void Frame::end() {
     viewer_.commit_frame(shared_from_this());
 }

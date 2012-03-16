@@ -44,7 +44,7 @@ class Group {
 public:
     Group();
 
-    Object& add(const Object& obj);
+    void add(const Object& obj);
 
     const Vec3& min_pos() {
         return min_pos_;

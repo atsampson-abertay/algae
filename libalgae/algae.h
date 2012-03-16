@@ -119,7 +119,7 @@ public:
     Frame(Viewer& viewer);
 
     void group(int num);
-    Object& add(const Object& obj);
+    void add(const Object& obj);
     void end();
 
 protected:
