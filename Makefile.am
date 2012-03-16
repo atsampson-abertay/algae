@@ -3,6 +3,8 @@ ACLOCAL_AMFLAGS = -I m4
 lib_LTLIBRARIES = libalgae.la
 
 libalgae_la_SOURCES = \
+	libalgae/colour.cc \
+	libalgae/colour.h \
 	libalgae/display.cc \
 	libalgae/display.h \
 	libalgae/frame.cc \
