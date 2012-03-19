@@ -34,6 +34,10 @@
 #ifndef ALGAE_H
 #define ALGAE_H
 
+#ifdef __cplusplus
+#define EXTERN_C extern "C"
+
+/*{{{  C++ interface */
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/scoped_ptr.hpp>
@@ -207,5 +211,20 @@ protected:
 /*}}}*/
 
 }
+/*}}}*/
+
+#else
+#define EXTERN_C
+#endif
+
+/*{{{  C interface  */
+EXTERN_C void algae_start(void);
+EXTERN_C void algae_stop(void);
+EXTERN_C void algae_frame_begin(void);
+EXTERN_C void algae_frame_add(float x, float y, float z, float radius);
+EXTERN_C void algae_frame_end(void);
+/*}}}*/
+
+#undef EXTERN_C
 
 #endif
