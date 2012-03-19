@@ -164,6 +164,10 @@ void Display::handle_event(SDL_Event& event) {
 /*}}}*/
 /*{{{  Display::draw_objects */
 void Display::draw_objects() {
+    if (frames_.empty()) {
+        // Nothing to draw.
+        return;
+    }
     const Frame& frame(*frames_.back());
 
 #if 0
