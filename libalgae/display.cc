@@ -197,7 +197,7 @@ void Display::draw_objects() {
 
     /*{{{  scale and translate so everything's visible */
     {
-        float zoom = 1.0;
+        float zoom = 2.0;
         float rotate = 0.0;
 
         Vec3 size = max_pos - min_pos;
@@ -206,7 +206,7 @@ void Display::draw_objects() {
 
         glMatrixMode(GL_MODELVIEW);
 
-        glTranslatef(0.0, 0.0, -(size.x * scale * zoom));
+        glTranslatef(0.0, 0.0, -(size.z * scale * zoom));
         glRotatef(rotate, 0.0, 1.0, 0.0);
         glScalef(scale, scale, scale);
         glTranslatef(-centre.x, -centre.y, -centre.z);
