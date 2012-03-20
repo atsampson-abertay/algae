@@ -64,9 +64,19 @@ extern "C" int main(int argc, char *argv[]) {
     algae::Viewer viewer;
 
     algae::FramePtr frame = viewer.new_frame();
+#if 0
     for (float f = -10.0; f < 10.0; f += 0.1) {
         frame->add(algae::Object(10.0 * sinf(f), 10.0 * cosf(f), f));
     }
+#else
+    for (float z = -10.0; z < 10.0; z += 1.0) {
+        for (float y = -10.0; y < 10.0; y += 1.0) {
+            for (float x = -10.0; x < 10.0; x += 1.0) {
+                frame->add(algae::Object(x, y, z));
+            }
+        }
+    }
+#endif
     frame->end();
 
     viewer.run();
