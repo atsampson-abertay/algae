@@ -42,8 +42,12 @@ using namespace algae;
 
 /*{{{  Display::Display */
 Display::Display()
-    : display_width_(800), display_height_(600), display_text_(true) {
-
+    : display_width_(800), display_height_(600), display_text_(true),
+      window_(0) {
+}
+/*}}}*/
+/*{{{  Display::init_display */
+void Display::init_display() {
     /*{{{  initialise SDL */
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         exit(1);
@@ -105,6 +109,10 @@ void Display::run() {
 /*}}}*/
 /*{{{  Display::update */
 void Display::update() {
+    if (window_ == 0) {
+        init_display();
+    }
+
     /*{{{  check for events */
     SDL_Event event;
     while (SDL_PollEvent(&event)) {

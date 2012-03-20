@@ -54,6 +54,7 @@ public:
     void update();
 
 protected:
+    void init_display();
     void handle_event(SDL_Event& event);
     void draw_objects();
     void draw_text();
