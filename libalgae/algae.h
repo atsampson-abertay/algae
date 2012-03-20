@@ -178,7 +178,7 @@ public:
     FramePtr new_frame();
 
     void run();
-    void run_once();
+    void update();
 
 protected:
     void commit_frame(FramePtr frame);

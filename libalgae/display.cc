@@ -95,6 +95,14 @@ void Display::add_frame(FramePtr frame) {
     frames_.push_back(frame);
 }
 /*}}}*/
+/*{{{  Display::run */
+void Display::run() {
+    while (true) {
+        update();
+        usleep(50000);
+    }
+}
+/*}}}*/
 /*{{{  Display::update */
 void Display::update() {
     /*{{{  check for events */
@@ -141,7 +149,6 @@ void Display::update() {
     draw_text();
 
     SDL_GL_SwapBuffers();
-
 }
 /*}}}*/
 /*{{{  Display::handle_event */

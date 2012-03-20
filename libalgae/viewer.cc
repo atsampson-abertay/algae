@@ -57,13 +57,11 @@ FramePtr Viewer::new_frame() {
 /*}}}*/
 /*{{{  Viewer::run */
 void Viewer::run() {
-    while (true) {
-        run_once();
-    }
+    display_->run();
 }
 /*}}}*/
-/*{{{  Viewer::run_once */
-void Viewer::run_once() {
+/*{{{  Viewer::update */
+void Viewer::update() {
     display_->update();
 }
 /*}}}*/

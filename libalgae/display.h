@@ -50,6 +50,7 @@ public:
     Display();
 
     void add_frame(FramePtr frame);
+    void run();
     void update();
 
 protected:
