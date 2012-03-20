@@ -183,8 +183,7 @@ void Display::handle_event(SDL_Event& event) {
 /*}}}*/
 /*{{{  Display::draw_objects */
 void Display::draw_objects() {
-    // XXX: Eww.
-    const Frame *framep;
+    FramePtr frame;
     {
         boost::mutex::scoped_lock guard(frames_mutex_);
 
@@ -192,13 +191,12 @@ void Display::draw_objects() {
             // Nothing to draw.
             return;
         }
-        framep = &(*frames_.back());
+        frame = frames_.back();
     }
-    const Frame& frame(*framep);
 
 #if 0
     /*{{{  print objects */
-    BOOST_FOREACH (const GroupMap::value_type& item, frame.groups()) {
+    BOOST_FOREACH (const GroupMap::value_type& item, frame->groups()) {
         const Group& group(*item.second);
         std::cout << "Group " << item.first << std::endl;
         BOOST_FOREACH (const Object& obj, group.objects()) {
@@ -214,7 +212,7 @@ void Display::draw_objects() {
     /*{{{  find overall bounds and centre */
     Vec3 min_pos, max_pos;
     // FIXME: handle empty groups
-    BOOST_FOREACH (const GroupMap::value_type& item, frame.groups()) {
+    BOOST_FOREACH (const GroupMap::value_type& item, frame->groups()) {
         const Group& group(*item.second);
         min_pos.to_min(group.min_pos());
         max_pos.to_max(group.max_pos());
@@ -248,7 +246,7 @@ void Display::draw_objects() {
 
     /*{{{  draw all the objects */
     boost::shared_ptr<GLUquadric> quad(gluNewQuadric(), gluDeleteQuadric);
-    BOOST_FOREACH (const GroupMap::value_type& item, frame.groups()) {
+    BOOST_FOREACH (const GroupMap::value_type& item, frame->groups()) {
         const Group& group(*item.second);
 
         Colour colour(1.0, 1.0, 1.0);
