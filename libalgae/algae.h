@@ -151,7 +151,7 @@ public:
 template <class charT, class traits>
 inline std::basic_ostream<charT, traits>&
     operator<<(std::basic_ostream<charT, traits>& os, const Vec3& vec) {
-    return os << "(" << vec.x << ", " << vec.y << "," << vec.z << ")";
+    return os << "(" << vec.x << ", " << vec.y << ", " << vec.z << ")";
 }
 /*}}}*/
 /*}}}*/
