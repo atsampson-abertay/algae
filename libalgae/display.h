@@ -43,6 +43,9 @@
 #define NO_SDL_GLEXT
 #include <SDL_opengl.h>
 
+#include <boost/thread.hpp>
+#include <vector>
+
 namespace algae {
 
 class Display {
@@ -63,6 +66,7 @@ protected:
     bool display_text_;
     SDL_Surface *window_;
     std::vector<FramePtr> frames_;
+    boost::mutex frames_mutex_;
 };
 
 }

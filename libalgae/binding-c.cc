@@ -31,14 +31,25 @@
 
 #include "algae.h"
 
+#include <boost/scoped_ptr.hpp>
+#include <boost/thread.hpp>
+
 using namespace algae;
 
 static boost::scoped_ptr<Viewer> viewer;
+static boost::scoped_ptr<boost::thread> thread;
 static FramePtr frame;
+
+/*{{{  run_viewer */
+static void run_viewer() {
+    viewer->run();
+}
+/*}}}*/
 
 /*{{{  algae_start */
 void algae_start() {
     viewer.reset(new Viewer());
+    thread.reset(new boost::thread(run_viewer));
 }
 /*}}}*/
 /*{{{  algae_stop */

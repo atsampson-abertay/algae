@@ -97,6 +97,8 @@ void Display::init_display() {
 /*}}}*/
 /*{{{  Display::add_frame */
 void Display::add_frame(FramePtr frame) {
+    boost::mutex::scoped_lock guard(frames_mutex_);
+
     frames_.push_back(frame);
 }
 /*}}}*/
@@ -180,11 +182,18 @@ void Display::handle_event(SDL_Event& event) {
 /*}}}*/
 /*{{{  Display::draw_objects */
 void Display::draw_objects() {
-    if (frames_.empty()) {
-        // Nothing to draw.
-        return;
+    // XXX: Eww.
+    const Frame *framep;
+    {
+        boost::mutex::scoped_lock guard(frames_mutex_);
+
+        if (frames_.empty()) {
+            // Nothing to draw.
+            return;
+        }
+        framep = &(*frames_.back());
     }
-    const Frame& frame(*frames_.back());
+    const Frame& frame(*framep);
 
 #if 0
     /*{{{  print objects */
