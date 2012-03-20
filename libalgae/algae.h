@@ -220,7 +220,7 @@ protected:
 /*{{{  C interface  */
 EXTERN_C void algae_start(void);
 EXTERN_C void algae_stop(void);
-EXTERN_C void algae_frame_begin(void);
+EXTERN_C void algae_frame_begin(int *send);
 EXTERN_C void algae_frame_add(float x, float y, float z, float radius);
 EXTERN_C void algae_frame_end(void);
 /*}}}*/
