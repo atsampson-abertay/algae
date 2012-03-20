@@ -37,6 +37,7 @@
 #include <boost/foreach.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <unistd.h>
 
 using namespace algae;
 
