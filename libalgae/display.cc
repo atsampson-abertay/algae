@@ -35,6 +35,7 @@
 #include "group.h"
 
 #include <boost/foreach.hpp>
+#include <boost/shared_ptr.hpp>
 #include <cstdlib>
 #include <iostream>
 #include <unistd.h>
@@ -246,6 +247,7 @@ void Display::draw_objects() {
     /*}}}*/
 
     /*{{{  draw all the objects */
+    boost::shared_ptr<GLUquadric> quad(gluNewQuadric(), gluDeleteQuadric);
     BOOST_FOREACH (const GroupMap::value_type& item, frame.groups()) {
         const Group& group(*item.second);
 
@@ -255,11 +257,12 @@ void Display::draw_objects() {
         colour.to_quad(c);
         glColor4fv(c);
 
-        glBegin(GL_POINTS);
         BOOST_FOREACH (const Object& obj, group.objects()) {
-            glVertex3f(obj.pos.x, obj.pos.y, obj.pos.z);
+            glPushMatrix();
+            glTranslatef(obj.pos.x, obj.pos.y, obj.pos.z);
+            gluSphere(quad.get(), obj.radius, 8, 8);
+            glPopMatrix();
         }
-        glEnd();
     }
     /*}}}*/
 }
