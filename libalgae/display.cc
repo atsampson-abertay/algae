@@ -101,6 +101,12 @@ void Display::add_frame(FramePtr frame) {
     boost::mutex::scoped_lock guard(frames_mutex_);
 
     frames_.push_back(frame);
+
+    /*{{{  trim old frames */
+    while (frames_.size() > 10) {
+        frames_.pop_front();
+    }
+    /*}}}*/
 }
 /*}}}*/
 /*{{{  Display::run */

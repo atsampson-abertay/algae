@@ -44,7 +44,7 @@
 #include <SDL_opengl.h>
 
 #include <boost/thread.hpp>
-#include <vector>
+#include <list>
 
 namespace algae {
 
@@ -65,7 +65,7 @@ protected:
     int display_width_, display_height_;
     bool display_text_;
     SDL_Surface *window_;
-    std::vector<FramePtr> frames_;
+    std::list<FramePtr> frames_;
     boost::mutex frames_mutex_;
 };
 
