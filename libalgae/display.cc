@@ -219,6 +219,13 @@ void Display::draw_objects() {
         Vec3 centre = (min_pos + max_pos) / 2;
         float scale = 1.0 / size.y;
 
+#if 0
+        std::cout << "  size=" << size << std::endl;
+        std::cout << "  centre=" << centre << std::endl;
+        std::cout << "  scale=" << scale << std::endl;
+        std::cout << std::endl;
+#endif
+
         glMatrixMode(GL_MODELVIEW);
 
         glTranslatef(0.0, 0.0, -(size.z * scale * zoom));
