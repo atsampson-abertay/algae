@@ -28,8 +28,9 @@ AC_SEARCH_LIBS([glewInit], [GLEW glew32], [], [AC_MSG_ERROR(GLEW is required)])
 
 AX_BOOST_BASE([], [], [AC_MSG_ERROR(Boost is required)])
 AX_BOOST_PROGRAM_OPTIONS
+AX_BOOST_THREAD
 CPPFLAGS="$BOOST_CPPFLAGS $CPPFLAGS"
-LIBS="$BOOST_LDFLAGS $BOOST_PROGRAM_OPTIONS_LIB $LIBS"
+LIBS="$BOOST_LDFLAGS $BOOST_PROGRAM_OPTIONS_LIB $BOOST_THREAD_LIB $LIBS"
 
 # The test for SDL must go last, since the SDLmain hack will cause link
 # errors with other libraries on MinGW.
