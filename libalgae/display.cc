@@ -140,43 +140,7 @@ void Display::update() {
     }
     /*}}}*/
 
-    glViewport(0, 0, display_width_, display_height_);
-
-    glShadeModel(GL_SMOOTH);
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-
-    glClearColor(0.0, 0.0, 0.0, 0.0);
-    glClearDepth(1.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45, (1.0 * display_width_) / display_height_, 0.1, 100.0);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glMatrixMode(GL_TEXTURE);
-    glLoadIdentity();
-
-    draw_objects();
-
-    /*{{{  map to screen coordinates */
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0, display_width_, 0, display_height_);
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0.375, 0.375, 0.0);
-    /*}}}*/
-
-    draw_text();
-
-    SDL_GL_SwapBuffers();
+    draw();
 
     /*{{{  update rotation */
     rotate_ += rotate_delta_;
@@ -237,6 +201,47 @@ void Display::handle_event(SDL_Event& event) {
         }
         break;
     }
+}
+/*}}}*/
+/*{{{  Display::draw */
+void Display::draw() {
+    glViewport(0, 0, display_width_, display_height_);
+
+    glShadeModel(GL_SMOOTH);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+
+    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearDepth(1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45, (1.0 * display_width_) / display_height_, 0.1, 100.0);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
+
+    draw_objects();
+
+    /*{{{  map to screen coordinates */
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(0, display_width_, 0, display_height_);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glTranslatef(0.375, 0.375, 0.0);
+    /*}}}*/
+
+    draw_text();
+
+    SDL_GL_SwapBuffers();
 }
 /*}}}*/
 /*{{{  Display::draw_objects */

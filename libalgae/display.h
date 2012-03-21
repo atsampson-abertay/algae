@@ -69,6 +69,7 @@ protected:
     void init_display();
     void handle_rotate(float x, float y, float z, bool shift);
     void handle_event(SDL_Event& event);
+    void draw();
     void draw_objects();
     void draw_text();
 
