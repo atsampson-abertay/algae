@@ -40,7 +40,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <set>
-#include <unistd.h>
 
 using namespace algae;
 
@@ -126,7 +125,7 @@ void Display::add_frame(FramePtr frame) {
 void Display::run() {
     while (true) {
         update();
-        usleep(50000);
+        SDL_Delay(50);
     }
 }
 /*}}}*/
