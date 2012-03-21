@@ -47,7 +47,8 @@ using namespace algae;
 /*{{{  Display::Display */
 Display::Display()
     : display_width_(800), display_height_(600), display_text_(true),
-      window_(0) {
+      window_(0),
+      need_redraw_(true) {
     reset_display();
 }
 /*}}}*/
@@ -117,6 +118,8 @@ void Display::add_frame(FramePtr frame) {
         frames_.pop_front();
     }
     /*}}}*/
+
+    need_redraw(true);
 }
 /*}}}*/
 /*{{{  Display::run */
@@ -140,7 +143,10 @@ void Display::update() {
     }
     /*}}}*/
 
-    draw();
+    if (need_redraw()) {
+        draw();
+        need_redraw(false);
+    }
 
     /*{{{  update rotation */
     rotate_ += rotate_delta_;
@@ -162,6 +168,9 @@ void Display::handle_event(SDL_Event& event) {
     switch (event.type) {
     case SDL_QUIT:
         exit(0);
+        break;
+    case SDL_VIDEOEXPOSE:
+        need_redraw(true);
         break;
     case SDL_KEYDOWN:
         bool shift = (event.key.keysym.mod & (KMOD_LSHIFT | KMOD_RSHIFT)) != 0;

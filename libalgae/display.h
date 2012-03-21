@@ -77,6 +77,22 @@ protected:
     bool display_text_;
     SDL_Surface *window_;
 
+    // XXX: this should be atomic
+    boost::mutex need_redraw_mutex_;
+    bool need_redraw_;
+    /*{{{  need_redraw accessor/mutator */
+    void need_redraw(bool value) {
+        boost::mutex::scoped_lock guard(need_redraw_mutex_);
+
+        need_redraw_ = value;
+    }
+    bool need_redraw() {
+        boost::mutex::scoped_lock guard(need_redraw_mutex_);
+
+        return need_redraw_;
+    }
+    /*}}}*/
+
     float zoom_;
     Vec3 rotate_, rotate_delta_;
 
