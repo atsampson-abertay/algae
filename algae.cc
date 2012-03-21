@@ -72,7 +72,8 @@ extern "C" int main(int argc, char *argv[]) {
     for (float z = -10.0; z < 10.0; z += 1.0) {
         for (float y = -10.0; y < 10.0; y += 1.0) {
             for (float x = -10.0; x < 10.0; x += 1.0) {
-                frame->add(algae::Object(x, y, z));
+                int col = int(x + 10) / 4;
+                frame->add(algae::Object(x, y, z, 0.5, col));
             }
         }
     }

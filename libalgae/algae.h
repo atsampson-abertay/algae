@@ -159,11 +159,12 @@ inline std::basic_ostream<charT, traits>&
 /*{{{  class Object */
 class Object {
 public:
-    Object(float x = 0.0, float y = 0.0, float z = 0.0, float _radius = 0.0)
-        : pos(x, y, z), radius(_radius) {}
+    Object(float x = 0.0, float y = 0.0, float z = 0.0, float _radius = 0.0, int _col = 0)
+        : pos(x, y, z), radius(_radius), col(_col) {}
 
     Vec3 pos;
     float radius;
+    int col;
 };
 /*}}}*/
 
@@ -221,7 +222,7 @@ protected:
 EXTERN_C void algae_start(void);
 EXTERN_C void algae_stop(void);
 EXTERN_C void algae_frame_begin(int *send);
-EXTERN_C void algae_frame_add(float x, float y, float z, float radius);
+EXTERN_C void algae_frame_add(float x, float y, float z, float radius, int col);
 EXTERN_C void algae_frame_end(void);
 /*}}}*/
 

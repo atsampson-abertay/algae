@@ -66,8 +66,8 @@ void algae_frame_begin(int *send) {
 }
 /*}}}*/
 /*{{{  algae_frame_add */
-void algae_frame_add(float x, float y, float z, float radius) {
-    Object obj(x, y, z, radius);
+void algae_frame_add(float x, float y, float z, float radius, int col) {
+    Object obj(x, y, z, radius, col);
     frame->add(obj);
 }
 /*}}}*/
