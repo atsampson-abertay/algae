@@ -46,6 +46,14 @@ using namespace algae;
 Display::Display()
     : display_width_(800), display_height_(600), display_text_(true),
       window_(0) {
+    reset_display();
+}
+/*}}}*/
+/*{{{  Display::reset_display */
+void Display::reset_display() {
+    rotate_ = Vec3(0.0, 0.0, 0.0);
+    rotate_delta_ = Vec3(0.0, 0.0, 0.0);
+    zoom_ = 2.0;
 }
 /*}}}*/
 /*{{{  Display::init_display */
@@ -167,6 +175,20 @@ void Display::update() {
     draw_text();
 
     SDL_GL_SwapBuffers();
+
+    /*{{{  update rotation */
+    rotate_ += rotate_delta_;
+    /*}}}*/
+}
+/*}}}*/
+/*{{{  Display::handle_rotate */
+void Display::handle_rotate(float x, float y, float z, bool shift) {
+    Vec3 by(x, y, z);
+    if (shift) {
+        rotate_delta_ += by * ROTATE_DELTA_STEP;
+    } else {
+        rotate_ += by * ROTATE_STEP;
+    }
 }
 /*}}}*/
 /*{{{  Display::handle_event */
@@ -176,7 +198,35 @@ void Display::handle_event(SDL_Event& event) {
         exit(0);
         break;
     case SDL_KEYDOWN:
+        bool shift = (event.key.keysym.mod & (KMOD_LSHIFT | KMOD_RSHIFT)) != 0;
         switch (event.key.keysym.sym) {
+        case SDLK_SPACE:
+            reset_display();
+            break;
+        case SDLK_a:
+            handle_rotate(-1.0, 0.0, 0.0, shift);
+            break;
+        case SDLK_d:
+            handle_rotate(1.0, 0.0, 0.0, shift);
+            break;
+        case SDLK_q:
+            handle_rotate(0.0, -1.0, 0.0, shift);
+            break;
+        case SDLK_e:
+            handle_rotate(0.0, 1.0, 0.0, shift);
+            break;
+        case SDLK_z:
+            handle_rotate(0.0, 0.0, -1.0, shift);
+            break;
+        case SDLK_c:
+            handle_rotate(0.0, 0.0, 1.0, shift);
+            break;
+        case SDLK_w:
+            zoom_ -= ZOOM_STEP;
+            break;
+        case SDLK_s:
+            zoom_ += ZOOM_STEP;
+            break;
         case SDLK_t:
             display_text_ = !display_text_;
             break;
@@ -227,9 +277,6 @@ void Display::draw_objects() {
 
     /*{{{  scale and translate so everything's visible */
     {
-        float zoom = 2.0;
-        float rotate = 0.0;
-
         Vec3 size = max_pos - min_pos;
         Vec3 centre = (min_pos + max_pos) / 2;
         float scale = 1.0 / size.y;
@@ -243,8 +290,10 @@ void Display::draw_objects() {
 
         glMatrixMode(GL_MODELVIEW);
 
-        glTranslatef(0.0, 0.0, -(size.z * scale * zoom));
-        glRotatef(rotate, 0.0, 1.0, 0.0);
+        glTranslatef(0.0, 0.0, -(size.z * scale * zoom_));
+        glRotatef(rotate_.x, 0.0, 1.0, 0.0);
+        glRotatef(rotate_.y, 1.0, 0.0, 0.0);
+        glRotatef(rotate_.z, 0.0, 0.0, 1.0);
         glScalef(scale, scale, scale);
         glTranslatef(-centre.x, -centre.y, -centre.z);
     }

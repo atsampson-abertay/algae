@@ -57,7 +57,13 @@ public:
     void update();
 
 protected:
+    static const float ROTATE_STEP = 9.0;
+    static const float ROTATE_DELTA_STEP = 0.9;
+    static const float ZOOM_STEP = 0.1;
+
+    void reset_display();
     void init_display();
+    void handle_rotate(float x, float y, float z, bool shift);
     void handle_event(SDL_Event& event);
     void draw_objects();
     void draw_text();
@@ -65,6 +71,10 @@ protected:
     int display_width_, display_height_;
     bool display_text_;
     SDL_Surface *window_;
+
+    float zoom_;
+    Vec3 rotate_, rotate_delta_;
+
     std::list<FramePtr> frames_;
     boost::mutex frames_mutex_;
 };
