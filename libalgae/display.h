@@ -35,6 +35,7 @@
 #define DISPLAY_H
 
 #include "algae.h"
+#include "colour.h"
 
 // The include ordering here is important: we need to pull in glew.h before
 // gl.h, and stop SDL redefining the glext.h stuff.
@@ -44,6 +45,7 @@
 #include <SDL_opengl.h>
 
 #include <boost/thread.hpp>
+#include <boost/unordered_map.hpp>
 #include <list>
 
 namespace algae {
@@ -57,6 +59,8 @@ public:
     void update();
 
 protected:
+    typedef boost::unordered_map<int, Colour> PaletteMap;
+
     static const float ROTATE_STEP = 9.0;
     static const float ROTATE_DELTA_STEP = 0.9;
     static const float ZOOM_STEP = 0.1;

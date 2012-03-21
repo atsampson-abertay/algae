@@ -42,6 +42,7 @@ Group::Group() {
 void Group::add(const Object& obj) {
     min_pos_.to_min(obj.pos);
     max_pos_.to_max(obj.pos);
+    cols_.insert(obj.col);
 
     objects_.push_back(obj);
 }

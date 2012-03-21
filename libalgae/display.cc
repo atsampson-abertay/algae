@@ -34,10 +34,12 @@
 #include "display.h"
 #include "group.h"
 
+#include <algorithm>
 #include <boost/foreach.hpp>
 #include <boost/shared_ptr.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <set>
 #include <unistd.h>
 
 using namespace algae;
@@ -267,11 +269,31 @@ void Display::draw_objects() {
 
     /*{{{  find overall bounds and centre */
     Vec3 min_pos, max_pos;
+    std::set<int> cols_used;
     // FIXME: handle empty groups
     BOOST_FOREACH (const GroupMap::value_type& item, frame->groups()) {
         const Group& group(*item.second);
         min_pos.to_min(group.min_pos());
         max_pos.to_max(group.max_pos());
+        BOOST_FOREACH (int col, group.cols()) {
+            cols_used.insert(col);
+        }
+    }
+    /*}}}*/
+
+    /*{{{  determine the palette */
+    PaletteMap palette;
+    {
+        // Pretend we're using at least 8 colours, so the first few get
+        // distinct (but static) hues.
+        int num_hues = std::max(int(cols_used.size()), 8);
+
+        float hue = 0.0;
+        const float hue_step = 1.0 / num_hues;
+        BOOST_FOREACH (int col, cols_used) {
+            palette.insert(PaletteMap::value_type(col, hsv(hue, 1.0, 1.0)));
+            hue += hue_step;
+        }
     }
     /*}}}*/
 
@@ -304,17 +326,19 @@ void Display::draw_objects() {
     BOOST_FOREACH (const GroupMap::value_type& item, frame->groups()) {
         const Group& group(*item.second);
 
-        Colour colour(1.0, 1.0, 1.0);
-
-        float c[4];
-        colour.to_quad(c);
-        glColor4fv(c);
-
         BOOST_FOREACH (const Object& obj, group.objects()) {
+            /*{{{  set colour */
+            float c[4];
+            palette[obj.col].to_quad(c);
+            glColor4fv(c);
+            /*}}}*/
+
+            /*{{{  draw sphere */
             glPushMatrix();
             glTranslatef(obj.pos.x, obj.pos.y, obj.pos.z);
             gluSphere(quad.get(), obj.radius, 8, 8);
             glPopMatrix();
+            /*}}}*/
         }
     }
     /*}}}*/

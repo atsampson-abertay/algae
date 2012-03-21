@@ -36,6 +36,8 @@
 
 #include "algae.h"
 
+#include <set>
+
 namespace algae {
 
 class Group {
@@ -50,6 +52,9 @@ public:
     const Vec3& max_pos() const {
         return max_pos_;
     }
+    const std::set<int>& cols() const {
+        return cols_;
+    }
 
     const ObjectList& objects() const {
         return objects_;
@@ -58,6 +63,7 @@ public:
 protected:
     ObjectList objects_;
     Vec3 min_pos_, max_pos_;
+    std::set<int> cols_;
 };
 
 }
