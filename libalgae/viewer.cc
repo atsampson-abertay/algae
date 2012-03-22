@@ -35,12 +35,21 @@
 #include <boost/make_shared.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <string>
 
 using namespace algae;
 
 /*{{{  Viewer::Viewer */
-Viewer::Viewer()
-    : display_(new Display) {
+Viewer::Viewer() {
+    const char *mode_env = std::getenv("ALGAE_MODE");
+    if (mode_env == NULL) {
+        mode_env = "d";
+    }
+    std::string mode(mode_env);
+
+    if (mode.find("d") != std::string::npos) {
+        display_.reset(new Display);
+    }
 }
 /*}}}*/
 /*{{{  Viewer::~Viewer */
