@@ -59,10 +59,10 @@ void algae_stop() {
 /*}}}*/
 /*{{{  algae_frame_begin */
 void algae_frame_begin(int *send) {
-    if (send != NULL) {
-        *send = 1;
-    }
     frame = viewer->new_frame();
+    if (send != NULL) {
+        *send = frame ? 1 : 0;
+    }
 }
 /*}}}*/
 /*{{{  algae_frame_add */
