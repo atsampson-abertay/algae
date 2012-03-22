@@ -52,21 +52,32 @@ Viewer::~Viewer() {
 /*}}}*/
 /*{{{  Viewer::new_frame */
 FramePtr Viewer::new_frame() {
-    return boost::make_shared<Frame>(*this);
+    if (display_) {
+        return boost::make_shared<Frame>(*this);
+    } else {
+        // No frame needed.
+        return FramePtr();
+    }
 }
 /*}}}*/
 /*{{{  Viewer::run */
 void Viewer::run() {
-    display_->run();
+    if (display_) {
+        display_->run();
+    }
 }
 /*}}}*/
 /*{{{  Viewer::update */
 void Viewer::update() {
-    display_->update();
+    if (display_) {
+        display_->update();
+    }
 }
 /*}}}*/
 /*{{{  Viewer::commit_frame */
 void Viewer::commit_frame(FramePtr frame) {
-    display_->add_frame(frame);
+    if (display_) {
+        display_->add_frame(frame);
+    }
 }
 /*}}}*/
