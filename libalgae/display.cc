@@ -43,6 +43,10 @@
 
 using namespace algae;
 
+static const float ROTATE_STEP = 9.0;
+static const float ROTATE_DELTA_STEP = 0.9;
+static const float ZOOM_STEP = 0.1;
+
 /*{{{  Display::Display */
 Display::Display()
     : display_width_(800), display_height_(600), display_text_(true),

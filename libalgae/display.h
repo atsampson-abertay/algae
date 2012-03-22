@@ -61,10 +61,6 @@ public:
 protected:
     typedef boost::unordered_map<int, Colour> PaletteMap;
 
-    static const float ROTATE_STEP = 9.0;
-    static const float ROTATE_DELTA_STEP = 0.9;
-    static const float ZOOM_STEP = 0.1;
-
     void reset_display();
     void init_display();
     void handle_rotate(float x, float y, float z, bool shift);
