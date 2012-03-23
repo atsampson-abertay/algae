@@ -54,6 +54,7 @@ class Display {
 public:
     Display();
 
+    bool want_frame();
     void add_frame(FramePtr frame);
     void run();
     void update();

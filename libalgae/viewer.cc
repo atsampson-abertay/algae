@@ -68,7 +68,7 @@ FramePtr Viewer::new_frame() {
     if (stats_) {
         stats_->start_frame();
     }
-    if (display_) {
+    if (display_ && display_->want_frame()) {
         return boost::make_shared<Frame>(*this);
     } else {
         // No frame needed.

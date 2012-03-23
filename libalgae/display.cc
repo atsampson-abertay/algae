@@ -110,6 +110,12 @@ void Display::init_display() {
     /*}}}*/
 }
 /*}}}*/
+/*{{{  bool Display::want_frame */
+bool Display::want_frame() {
+    // Don't ask for another frame if we've got one waiting already.
+    return !need_redraw();
+}
+/*}}}*/
 /*{{{  Display::add_frame */
 void Display::add_frame(FramePtr frame) {
     {
