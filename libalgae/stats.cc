@@ -34,6 +34,7 @@
 
 #include <iostream>
 #include <time.h>
+#include <unistd.h>
 
 using namespace algae;
 
@@ -46,6 +47,14 @@ Stats::Stats() {
     last_frame_time_ = now;
     last_output_time_ = now;
     last_output_frame_ = 0;
+
+    /*{{{  check whether stderr is a terminal */
+    if (isatty(2)) {
+        highlight_output_ = true;
+    } else {
+        highlight_output_ = false;
+    }
+    /*}}}*/
 }
 /*}}}*/
 /*{{{  Stats::~Stats */
@@ -74,6 +83,13 @@ void Stats::show_stats(Time now, bool final) {
 
     Time all_mean = mean_time();
 
+    /*{{{  enable highlighting */
+    if (highlight_output_) {
+        // XXX: this should really use terminfo
+        std::cerr << "\033[33m";
+    }
+    /*}}}*/
+
     std::cerr << "[stats] frame=" << frame
               << " time=" << now
               << " all-mean=" << all_mean
@@ -84,6 +100,12 @@ void Stats::show_stats(Time now, bool final) {
         std::cerr << " recent-mean=" << recent_mean
                   << " recent-fps=" << (1.0 / recent_mean);
     }
+
+    /*{{{  disable highlighting */
+    if (highlight_output_) {
+        std::cerr << "\033[0m";
+    }
+    /*}}}*/
 
     std::cerr << std::endl;
 

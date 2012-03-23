@@ -64,6 +64,8 @@ protected:
     Time last_frame_time_;
     int last_output_frame_;
     Time last_output_time_;
+
+    bool highlight_output_;
 };
 
 }
