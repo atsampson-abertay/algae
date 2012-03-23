@@ -11,6 +11,8 @@ libalgae_la_SOURCES = \
 	libalgae/frame.cc \
 	libalgae/group.cc \
 	libalgae/group.h \
+	libalgae/stats.cc \
+	libalgae/stats.h \
 	libalgae/viewer.cc
 
 include_HEADERS = \

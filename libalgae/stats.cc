@@ -30,70 +30,83 @@
  */
 
 #include "algae.h"
-#include "display.h"
 #include "stats.h"
 
-#include <boost/make_shared.hpp>
-#include <cstdlib>
 #include <iostream>
-#include <string>
+#include <time.h>
 
 using namespace algae;
 
-/*{{{  Viewer::Viewer */
-Viewer::Viewer() {
-    const char *mode_env = std::getenv("ALGAE_MODE");
-    if (mode_env == NULL) {
-        mode_env = "d";
-    }
-    std::string mode(mode_env);
+static const Time OUTPUT_PERIOD = 5.0;
 
-    if (mode.find("d") != std::string::npos) {
-        display_.reset(new Display);
-    }
-    if (mode.find("s") != std::string::npos) {
-        stats_.reset(new Stats);
-    }
+/*{{{  Stats::Stats */
+Stats::Stats() {
+    Time now = get_time();
+
+    last_frame_time_ = now;
+    last_output_time_ = now;
+    last_output_frame_ = 0;
 }
 /*}}}*/
-/*{{{  Viewer::~Viewer */
-Viewer::~Viewer() {
-    // Subtle: this destructor doesn't do anything, but it's necessary in order
-    // for display_ to be destroyed in a context where the full (not forward)
-    // declaration of Display is available.
+/*{{{  Stats::~Stats */
+Stats::~Stats() {
+    show_stats(get_time(), true);
 }
 /*}}}*/
-/*{{{  Viewer::new_frame */
-FramePtr Viewer::new_frame() {
-    if (stats_) {
-        stats_->start_frame();
+/*{{{  Stats::start_frame */
+void Stats::start_frame() {
+    /*{{{  add time to list */
+    Time now = get_time();
+    frame_times_.push_back(now - last_frame_time_);
+    last_frame_time_ = now;
+    /*}}}*/
+
+    /*{{{  show stats periodically */
+    if ((now - last_output_time_) > OUTPUT_PERIOD) {
+        show_stats(now, false);
     }
-    if (display_) {
-        return boost::make_shared<Frame>(*this);
-    } else {
-        // No frame needed.
-        return FramePtr();
-    }
+    /*}}}*/
 }
 /*}}}*/
-/*{{{  Viewer::run */
-void Viewer::run() {
-    if (display_) {
-        display_->run();
+/*{{{  Stats::show_stats */
+void Stats::show_stats(Time now, bool final) {
+    int frame = frame_times_.size();
+
+    Time all_mean = mean_time();
+
+    std::cerr << "[stats] frame=" << frame
+              << " time=" << now
+              << " all-mean=" << all_mean
+              << " all-fps=" << (1.0 / all_mean);
+
+    if (!final) {
+        Time recent_mean = mean_time(last_output_frame_);
+        std::cerr << " recent-mean=" << recent_mean
+                  << " recent-fps=" << (1.0 / recent_mean);
     }
+
+    std::cerr << std::endl;
+
+    last_output_frame_ = frame;
+    last_output_time_ = now;
 }
 /*}}}*/
-/*{{{  Viewer::update */
-void Viewer::update() {
-    if (display_) {
-        display_->update();
-    }
+/*{{{  Stats::get_time */
+Time Stats::get_time() {
+    struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return ts.tv_sec + (ts.tv_nsec * 1.0e-9);
 }
 /*}}}*/
-/*{{{  Viewer::commit_frame */
-void Viewer::commit_frame(FramePtr frame) {
-    if (display_) {
-        display_->add_frame(frame);
+/*{{{  Stats::mean_time */
+Time Stats::mean_time(int start) {
+    Time total = 0.0;
+    int count = 0;
+    for (TimeList::iterator it = frame_times_.begin() + start; it != frame_times_.end(); ++it) {
+        total += *it;
+        ++count;
     }
+
+    return total / count;
 }
 /*}}}*/

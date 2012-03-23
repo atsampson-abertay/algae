@@ -53,6 +53,7 @@ class Display;
 class Frame;
 class Group;
 class Object;
+class Stats;
 class Vec3;
 class Viewer;
 /*}}}*/
@@ -185,6 +186,7 @@ protected:
     void commit_frame(FramePtr frame);
 
     boost::scoped_ptr<Display> display_;
+    boost::scoped_ptr<Stats> stats_;
 };
 /*}}}*/
 

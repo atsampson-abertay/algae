@@ -1,3 +1,5 @@
+/** Collect performance statistics. */
+
 /*
  *  Copyright 2010, 2011, 2012 Adam Sampson
  *  All rights reserved.
@@ -29,71 +31,41 @@
  *  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef STATS_H
+#define STATS_H
+
 #include "algae.h"
-#include "display.h"
-#include "stats.h"
 
-#include <boost/make_shared.hpp>
-#include <cstdlib>
-#include <iostream>
-#include <string>
+#include <vector>
 
-using namespace algae;
+namespace algae {
 
-/*{{{  Viewer::Viewer */
-Viewer::Viewer() {
-    const char *mode_env = std::getenv("ALGAE_MODE");
-    if (mode_env == NULL) {
-        mode_env = "d";
-    }
-    std::string mode(mode_env);
+/** A timestamp or time delta in seconds. */
+typedef float Time;
 
-    if (mode.find("d") != std::string::npos) {
-        display_.reset(new Display);
-    }
-    if (mode.find("s") != std::string::npos) {
-        stats_.reset(new Stats);
-    }
+class Stats {
+public:
+    Stats();
+    ~Stats();
+
+    void start_frame();
+    void show_stats(Time now, bool final);
+
+protected:
+    typedef std::vector<Time> TimeList;
+
+    /** Return the current wall-clock timestamp. */
+    Time get_time();
+
+    /** Return the mean time for a series of frames. */
+    Time mean_time(int start = 0);
+
+    TimeList frame_times_;
+    Time last_frame_time_;
+    int last_output_frame_;
+    Time last_output_time_;
+};
+
 }
-/*}}}*/
-/*{{{  Viewer::~Viewer */
-Viewer::~Viewer() {
-    // Subtle: this destructor doesn't do anything, but it's necessary in order
-    // for display_ to be destroyed in a context where the full (not forward)
-    // declaration of Display is available.
-}
-/*}}}*/
-/*{{{  Viewer::new_frame */
-FramePtr Viewer::new_frame() {
-    if (stats_) {
-        stats_->start_frame();
-    }
-    if (display_) {
-        return boost::make_shared<Frame>(*this);
-    } else {
-        // No frame needed.
-        return FramePtr();
-    }
-}
-/*}}}*/
-/*{{{  Viewer::run */
-void Viewer::run() {
-    if (display_) {
-        display_->run();
-    }
-}
-/*}}}*/
-/*{{{  Viewer::update */
-void Viewer::update() {
-    if (display_) {
-        display_->update();
-    }
-}
-/*}}}*/
-/*{{{  Viewer::commit_frame */
-void Viewer::commit_frame(FramePtr frame) {
-    if (display_) {
-        display_->add_frame(frame);
-    }
-}
-/*}}}*/
+
+#endif
