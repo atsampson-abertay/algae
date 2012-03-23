@@ -74,6 +74,7 @@ protected:
     Time mean_time(int start = 0);
 
     int frame_;
+    int period_;
 
     SampleList samples_;
 

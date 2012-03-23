@@ -39,6 +39,7 @@
 
 using namespace algae;
 
+static const Time SAMPLE_PERIOD = 1.0;
 static const Time OUTPUT_PERIOD = 5.0;
 
 /*{{{  Stats::Stats */
@@ -46,6 +47,7 @@ Stats::Stats() {
     Time now = get_time();
 
     frame_ = 0;
+    period_ = 1;
 
     last_sample_frame_ = 0;
     last_sample_time_ = now;
@@ -71,12 +73,19 @@ Stats::~Stats() {
 void Stats::start_frame() {
     ++frame_;
 
-    // FIXME: return unless it's time to sample
+    /*{{{  return unless it's time to sample */
+    if ((frame_ - last_sample_frame_) < period_) {
+        return;
+    }
+    /*}}}*/
 
     Time now = get_time();
 
     /*{{{  add sample to list */
-    SamplePtr sample = boost::make_shared<Sample>(now - last_sample_time_, frame_ - last_sample_frame_);
+    Time sample_time = now - last_sample_time_;
+    int sample_frames = frame_ - last_sample_frame_;
+
+    SamplePtr sample = boost::make_shared<Sample>(sample_time, sample_frames);
     samples_.push_back(sample);
 
     last_sample_time_ = now;
@@ -86,6 +95,13 @@ void Stats::start_frame() {
     /*{{{  show stats periodically */
     if ((now - last_output_time_) > OUTPUT_PERIOD) {
         show_stats(now, false);
+    }
+    /*}}}*/
+
+    /*{{{  work out next period in frames, aiming for SAMPLE_PERIOD */
+    period_ = (sample_frames / sample_time) * SAMPLE_PERIOD;
+    if (period_ < 1) {
+        period_ = 1;
     }
     /*}}}*/
 }
@@ -102,6 +118,7 @@ void Stats::show_stats(Time now, bool final) {
     /*}}}*/
 
     std::cerr << "[stats] frame=" << frame_
+              << " period=" << period_
               << " sample=" << samples_.size()
               << " time=" << now
               << " all-mean=" << all_mean
