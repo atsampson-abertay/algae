@@ -112,15 +112,10 @@ void Display::init_display() {
 /*}}}*/
 /*{{{  Display::add_frame */
 void Display::add_frame(FramePtr frame) {
-    boost::mutex::scoped_lock guard(frames_mutex_);
-
-    frames_.push_back(frame);
-
-    /*{{{  trim old frames */
-    while (frames_.size() > 10) {
-        frames_.pop_front();
+    {
+        boost::mutex::scoped_lock guard(latest_frame_mutex_);
+        latest_frame_ = frame;
     }
-    /*}}}*/
 
     need_redraw(true);
 }
@@ -260,13 +255,13 @@ void Display::draw() {
 void Display::draw_objects() {
     FramePtr frame;
     {
-        boost::mutex::scoped_lock guard(frames_mutex_);
+        boost::mutex::scoped_lock guard(latest_frame_mutex_);
 
-        if (frames_.empty()) {
+        if (!latest_frame_) {
             // Nothing to draw.
             return;
         }
-        frame = frames_.back();
+        frame = latest_frame_;
     }
 
 #if 0

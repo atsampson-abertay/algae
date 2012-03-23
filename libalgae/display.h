@@ -92,8 +92,8 @@ protected:
     float zoom_;
     Vec3 rotate_, rotate_delta_;
 
-    std::list<FramePtr> frames_;
-    boost::mutex frames_mutex_;
+    FramePtr latest_frame_;
+    boost::mutex latest_frame_mutex_;
 };
 
 }
