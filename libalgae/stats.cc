@@ -32,6 +32,7 @@
 #include "algae.h"
 #include "stats.h"
 
+#include <boost/make_shared.hpp>
 #include <iostream>
 #include <time.h>
 #include <unistd.h>
@@ -44,9 +45,13 @@ static const Time OUTPUT_PERIOD = 5.0;
 Stats::Stats() {
     Time now = get_time();
 
-    last_frame_time_ = now;
+    frame_ = 0;
+
+    last_sample_frame_ = 0;
+    last_sample_time_ = now;
+
     last_output_time_ = now;
-    last_output_frame_ = 0;
+    last_output_sample_ = 0;
 
     /*{{{  check whether stderr is a terminal */
     if (isatty(2)) {
@@ -64,10 +69,18 @@ Stats::~Stats() {
 /*}}}*/
 /*{{{  Stats::start_frame */
 void Stats::start_frame() {
-    /*{{{  add time to list */
+    ++frame_;
+
+    // FIXME: return unless it's time to sample
+
     Time now = get_time();
-    frame_times_.push_back(now - last_frame_time_);
-    last_frame_time_ = now;
+
+    /*{{{  add sample to list */
+    SamplePtr sample = boost::make_shared<Sample>(now - last_sample_time_, frame_ - last_sample_frame_);
+    samples_.push_back(sample);
+
+    last_sample_time_ = now;
+    last_sample_frame_ = frame_;
     /*}}}*/
 
     /*{{{  show stats periodically */
@@ -79,8 +92,6 @@ void Stats::start_frame() {
 /*}}}*/
 /*{{{  Stats::show_stats */
 void Stats::show_stats(Time now, bool final) {
-    int frame = frame_times_.size();
-
     Time all_mean = mean_time();
 
     /*{{{  enable highlighting */
@@ -90,13 +101,15 @@ void Stats::show_stats(Time now, bool final) {
     }
     /*}}}*/
 
-    std::cerr << "[stats] frame=" << frame
+    std::cerr << "[stats] frame=" << frame_
+              << " sample=" << samples_.size()
               << " time=" << now
               << " all-mean=" << all_mean
               << " all-fps=" << (1.0 / all_mean);
 
     if (!final) {
-        Time recent_mean = mean_time(last_output_frame_);
+        Time recent_mean = mean_time(last_output_sample_);
+
         std::cerr << " recent-mean=" << recent_mean
                   << " recent-fps=" << (1.0 / recent_mean);
     }
@@ -109,8 +122,8 @@ void Stats::show_stats(Time now, bool final) {
 
     std::cerr << std::endl;
 
-    last_output_frame_ = frame;
     last_output_time_ = now;
+    last_output_sample_ = samples_.size();
 }
 /*}}}*/
 /*{{{  Stats::get_time */
@@ -122,13 +135,16 @@ Time Stats::get_time() {
 /*}}}*/
 /*{{{  Stats::mean_time */
 Time Stats::mean_time(int start) {
-    Time total = 0.0;
-    int count = 0;
-    for (TimeList::iterator it = frame_times_.begin() + start; it != frame_times_.end(); ++it) {
-        total += *it;
-        ++count;
+    Time total_time = 0.0;
+    int total_frames = 0;
+
+    for (SampleList::iterator it = samples_.begin() + start; it != samples_.end(); ++it) {
+        SamplePtr sample(*it);
+
+        total_time += sample->time;
+        total_frames += sample->frames;
     }
 
-    return total / count;
+    return total_time / total_frames;
 }
 /*}}}*/

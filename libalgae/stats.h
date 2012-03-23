@@ -36,6 +36,7 @@
 
 #include "algae.h"
 
+#include <boost/shared_ptr.hpp>
 #include <vector>
 
 namespace algae {
@@ -43,6 +44,17 @@ namespace algae {
 /** A timestamp or time delta in seconds. */
 typedef float Time;
 
+/*{{{  class Sample */
+class Sample {
+public:
+    Sample(Time _time, int _frames) : time(_time), frames(_frames) {}
+
+    Time time;
+    int frames;
+};
+/*}}}*/
+
+/*{{{  class Stats */
 class Stats {
 public:
     Stats();
@@ -52,21 +64,28 @@ public:
     void show_stats(Time now, bool final);
 
 protected:
-    typedef std::vector<Time> TimeList;
+    typedef boost::shared_ptr<Sample> SamplePtr;
+    typedef std::vector<SamplePtr> SampleList;
 
     /** Return the current wall-clock timestamp. */
     Time get_time();
 
-    /** Return the mean time for a series of frames. */
+    /** Return the mean frame time across a series of samples. */
     Time mean_time(int start = 0);
 
-    TimeList frame_times_;
-    Time last_frame_time_;
-    int last_output_frame_;
+    int frame_;
+
+    SampleList samples_;
+
+    Time last_sample_time_;
+    int last_sample_frame_;
+
     Time last_output_time_;
+    int last_output_sample_;
 
     bool highlight_output_;
 };
+/*}}}*/
 
 }
 
