@@ -294,7 +294,8 @@ void Display::draw_objects() {
         min_pos.to_min(group.min_pos());
         max_pos.to_max(group.max_pos());
         BOOST_FOREACH (int col, group.cols()) {
-            cols_used.insert(col);
+            // Negative colours are the same hue as positive ones, but pale.
+            cols_used.insert(abs(col));
         }
     }
     /*}}}*/
@@ -310,6 +311,7 @@ void Display::draw_objects() {
         const float hue_step = 1.0 / num_hues;
         BOOST_FOREACH (int col, cols_used) {
             palette.insert(PaletteMap::value_type(col, hsv(hue, 1.0, 1.0)));
+            palette.insert(PaletteMap::value_type(-col, hsv(hue, 0.2, 1.0)));
             hue += hue_step;
         }
     }
