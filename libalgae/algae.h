@@ -66,6 +66,7 @@ typedef std::vector<Object> ObjectList;
 /*}}}*/
 
 /*{{{  class Vec3 */
+/** A 3D vector of floats. */
 class Vec3 {
 public:
     Vec3(float _x = 0.0, float _y = 0.0, float _z = 0.0)

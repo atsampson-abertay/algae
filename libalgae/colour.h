@@ -41,6 +41,7 @@ static uint8_t component_to_uint8(float f) {
 }
 
 /*{{{  class Colour */
+/** A colour, represented in RGB form. */
 class Colour {
 public:
     Colour() : r(0.0), g(0.0), b(0.0), a(0.0) {}
@@ -85,7 +86,13 @@ public:
 /*}}}*/
 
 /** Convert an HSV colour triple to RGB.
-    Based on: http://www.cs.rit.edu/~ncs/color/t_convert.html */
+    Based on: http://www.cs.rit.edu/~ncs/color/t_convert.html
+
+    @param h Hue
+    @param s Saturation
+    @param v Value
+    @return the corresponding Colour
+    */
 Colour hsv(float h, float s, float v);
 
 #endif

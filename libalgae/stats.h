@@ -45,6 +45,7 @@ namespace algae {
 typedef float Time;
 
 /*{{{  class Sample */
+/** A sample, whatever that is. */
 class Sample {
 public:
     Sample(Time _time, int _frames) : time(_time), frames(_frames) {}
