@@ -321,7 +321,7 @@ void Display::draw_objects() {
     {
         Vec3 size = max_pos - min_pos;
         Vec3 centre = (min_pos + max_pos) / 2;
-        float scale = 1.0 / size.y;
+        float scale = 1.0 / std::max(size.x, std::max(size.y, size.z));
 
 #if 0
         std::cout << "  size=" << size << std::endl;
@@ -332,7 +332,7 @@ void Display::draw_objects() {
 
         glMatrixMode(GL_MODELVIEW);
 
-        glTranslatef(0.0, 0.0, -(size.z * scale * zoom_));
+        glTranslatef(0.0, 0.0, -(size.z * 2.0 * scale * zoom_));
         glRotatef(rotate_.x, 0.0, 1.0, 0.0);
         glRotatef(rotate_.y, 1.0, 0.0, 0.0);
         glRotatef(rotate_.z, 0.0, 0.0, 1.0);
