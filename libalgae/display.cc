@@ -49,7 +49,7 @@ static const float ZOOM_STEP = 0.1;
 
 /*{{{  Display::Display */
 Display::Display()
-    : display_width_(800), display_height_(600), display_text_(true),
+    : display_width_(1024), display_height_(768), display_text_(true),
       window_(0),
       need_redraw_(true) {
     reset_display();
